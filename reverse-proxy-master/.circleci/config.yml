@@ -7,12 +7,11 @@ executors:
     environment:
       IMAGE_NAME: ghcr.io/berkaydedeoglu/reverse-proxy-master
 
-  deploy-executor:
+  nomad-executor:
     docker:
-      - image: alpine:latest  # Küçük, hızlı, güvenli
+      - image: hashicorp/nomad:latest
     environment:
       NOMAD_JOB_FILE: reverse-proxy-master/reverse-proxy-master.nomad
-    working_directory: ~/project
 
 jobs:
   build-and-push:
@@ -37,36 +36,23 @@ jobs:
           command: docker push $IMAGE_NAME:latest
 
   deploy-nomad:
-    executor: deploy-executor
+    executor: nomad-executor
     steps:
       - checkout
 
       - run:
-          name: Install curl and jq
-          command: apk add --no-cache curl jq
+          name: Convert .nomad to JSON
+          command: |
+            cd reverse-proxy-master
+            nomad job parse -json reverse-proxy-master.nomad > ../parsed-job.json
 
       - run:
-          name: Print raw API response (debug)
-          command: |
-            curl -i -X POST "$NOMAD_ADDR/v1/jobs/parse/hcl?region=global&canonicalize=true&validate=true" \
-              -H "Content-Type: application/octet-stream" \
-              --data-binary @$NOMAD_JOB_FILE
-      - run:
-          name: Parse HCL with Nomad API
-          command: |
-            echo "Parsing job file..."
-            curl -s -X POST "$NOMAD_ADDR/v1/jobs/parse/hcl?region=global&canonicalize=true&validate=true" \
-              -H "Content-Type: application/octet-stream" \
-              --data-binary @$NOMAD_JOB_FILE \
-              -o parsed-job.json
-
-            echo "Parsed job:"
-            cat parsed-job.json | jq '.'
+          name: Show parsed job
+          command: cat parsed-job.json
 
       - run:
           name: Deploy parsed job to Nomad
           command: |
-            echo "Deploying job to $NOMAD_ADDR..."
             curl -X POST "$NOMAD_ADDR/v1/jobs" \
               -H "Content-Type: application/json" \
               --data-binary @parsed-job.json
