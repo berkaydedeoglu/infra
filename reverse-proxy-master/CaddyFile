@@ -1,0 +1,12 @@
+:80 {
+  respond /_health "OK" 200
+}
+
+:443 {
+  respond /_health "OK" 200
+}
+
+nomad.berkaydedeoglu.dev {
+  encode gzip
+  reverse_proxy http://147.93.121.174:4646
+}
