@@ -3,15 +3,13 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: cimg/base:stable  # Docker yüklü CircleCI resmi imaj
+      - image: cimg/base:stable  # Docker yüklü
     environment:
       IMAGE_NAME: ghcr.io/berkaydedeoglu/reverse-proxy-master
 
   nomad-executor:
     docker:
-      - image: hashicorp/nomad:latest
-    environment:
-      NOMAD_JOB_PATH: reverse-proxy-master/reverse-proxy-master.nomad
+      - image: hashicorp/nomad:latest  # nomad CLI + curl var
 
 jobs:
   build-and-push:
@@ -43,13 +41,13 @@ jobs:
       - run:
           name: Convert Nomad job to JSON
           command: |
-            nomad job parse -json $NOMAD_JOB_PATH > job.json
+            cd reverse-proxy-master
+            nomad job parse -json reverse-proxy-master.nomad > ../job.json
 
       - run:
           name: Deploy to Nomad via API
           command: |
             curl -X POST "$NOMAD_ADDR/v1/jobs" \
-              -H "X-Nomad-Token: $NOMAD_TOKEN" \
               -H "Content-Type: application/json" \
               --data-binary @job.json
 
