@@ -1,9 +1,9 @@
 version: 2.1
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     docker:
-      - image: cimg/base:stable
+      - image: hashicorp/nomad:latest
     environment:
       IMAGE_NAME: ghcr.io/berkaydedeoglu/reverse-proxy-master
     steps:
@@ -22,10 +22,23 @@ jobs:
           command: echo $GHCR_TOKEN | docker login ghcr.io -u $GHCR_USER --password-stdin
 
       - run:
-          name: Push image
+          name: Docker push
           command: docker push $IMAGE_NAME:latest
 
+      - run:
+          name: Convert Nomad job to JSON
+          command: |
+            nomad job parse -json reverse-proxy-master/reverse-proxy-master.nomad > job.json
+
+      - run:
+          name: Deploy to Nomad via API
+          command: |
+            curl -X POST "$NOMAD_ADDR/v1/jobs" \
+              -H "Content-Type: application/json" \
+              --data-binary @job.json
+
 workflows:
-  build:
+  version: 2
+  deploy:
     jobs:
-      - build-and-push
+      - build-and-deploy
