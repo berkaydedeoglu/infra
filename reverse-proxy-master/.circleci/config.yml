@@ -1,11 +1,21 @@
 version: 2.1
 
-jobs:
-  build-and-deploy:
+executors:
+  docker-executor:
+    docker:
+      - image: cimg/base:stable  # Docker yüklü CircleCI resmi imaj
+    environment:
+      IMAGE_NAME: ghcr.io/berkaydedeoglu/reverse-proxy-master
+
+  nomad-executor:
     docker:
       - image: hashicorp/nomad:latest
     environment:
-      IMAGE_NAME: ghcr.io/berkaydedeoglu/reverse-proxy-master
+      NOMAD_JOB_PATH: reverse-proxy-master/reverse-proxy-master.nomad
+
+jobs:
+  build-and-push:
+    executor: docker-executor
     steps:
       - checkout
 
@@ -18,27 +28,36 @@ jobs:
             docker build -t $IMAGE_NAME:latest .
 
       - run:
-          name: Docker login to GHCR
+          name: Docker login
           command: echo $GHCR_TOKEN | docker login ghcr.io -u $GHCR_USER --password-stdin
 
       - run:
           name: Docker push
           command: docker push $IMAGE_NAME:latest
 
+  deploy-nomad:
+    executor: nomad-executor
+    steps:
+      - checkout
+
       - run:
           name: Convert Nomad job to JSON
           command: |
-            nomad job parse -json reverse-proxy-master/reverse-proxy-master.nomad > job.json
+            nomad job parse -json $NOMAD_JOB_PATH > job.json
 
       - run:
           name: Deploy to Nomad via API
           command: |
             curl -X POST "$NOMAD_ADDR/v1/jobs" \
+              -H "X-Nomad-Token: $NOMAD_TOKEN" \
               -H "Content-Type: application/json" \
               --data-binary @job.json
 
 workflows:
   version: 2
-  deploy:
+  build-deploy:
     jobs:
-      - build-and-deploy
+      - build-and-push
+      - deploy-nomad:
+          requires:
+            - build-and-push
