@@ -9,7 +9,10 @@ executors:
 
   deploy-executor:
     docker:
-      - image: curlimages/curl:latest  # sadece curl ile deploy
+      - image: alpine:latest  # Küçük, hızlı, güvenli
+    environment:
+      NOMAD_JOB_FILE: reverse-proxy-master/reverse-proxy-master.nomad
+    working_directory: ~/project
 
 jobs:
   build-and-push:
@@ -39,17 +42,28 @@ jobs:
       - checkout
 
       - run:
-          name: Deploy HCL to Nomad API
-          command: |
-            curl -X POST "$NOMAD_ADDR/v1/jobs/parse?region=global&canonicalize=true&validate=true" \
-              -H "Content-Type: application/octet-stream" \
-              --data-binary @reverse-proxy-master/reverse-proxy-master.nomad \
-              | tee response.json
+          name: Install curl and jq
+          command: apk add --no-cache curl jq
 
-            echo "Posting parsed job to /v1/jobs..."
+      - run:
+          name: Parse HCL with Nomad API
+          command: |
+            echo "Parsing job file..."
+            curl -s -X POST "$NOMAD_ADDR/v1/jobs/parse?region=global&canonicalize=true&validate=true" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary @$NOMAD_JOB_FILE \
+              -o parsed-job.json
+
+            echo "Parsed job:"
+            cat parsed-job.json | jq '.'
+
+      - run:
+          name: Deploy parsed job to Nomad
+          command: |
+            echo "Deploying job to $NOMAD_ADDR..."
             curl -X POST "$NOMAD_ADDR/v1/jobs" \
               -H "Content-Type: application/json" \
-              --data-binary @response.json
+              --data-binary @parsed-job.json
 
 workflows:
   version: 2
