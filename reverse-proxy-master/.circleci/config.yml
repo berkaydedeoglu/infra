@@ -48,14 +48,14 @@ jobs:
       - run:
           name: Print raw API response (debug)
           command: |
-            curl -i -X POST "$NOMAD_ADDR/v1/jobs/parse?region=global&canonicalize=true&validate=true" \
+            curl -i -X POST "$NOMAD_ADDR/v1/jobs/parse/hcl?region=global&canonicalize=true&validate=true" \
               -H "Content-Type: application/octet-stream" \
               --data-binary @$NOMAD_JOB_FILE
       - run:
           name: Parse HCL with Nomad API
           command: |
             echo "Parsing job file..."
-            curl -s -X POST "$NOMAD_ADDR/v1/jobs/parse?region=global&canonicalize=true&validate=true" \
+            curl -s -X POST "$NOMAD_ADDR/v1/jobs/parse/hcl?region=global&canonicalize=true&validate=true" \
               -H "Content-Type: application/octet-stream" \
               --data-binary @$NOMAD_JOB_FILE \
               -o parsed-job.json
