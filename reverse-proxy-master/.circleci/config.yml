@@ -42,21 +42,20 @@ jobs:
       - checkout
 
       - run:
-          name: Install curl, unzip and Nomad CLI
+          name: Install curl and unzip, download Nomad binary
           command: |
             apk add --no-cache curl unzip
             curl -LO https://releases.hashicorp.com/nomad/1.9.7/nomad_1.9.7_linux_amd64.zip
             unzip nomad_1.9.7_linux_amd64.zip
-            install -m 755 nomad /usr/bin/nomad
 
       - run:
-          name: Check Nomad version
-          command: nomad version
+          name: Show Nomad version
+          command: ./nomad version
 
       - run:
           name: Convert .nomad to JSON
           command: |
-            nomad job run -output $NOMAD_JOB_FILE > parsed-job.json
+            ./nomad job run -output $NOMAD_JOB_FILE > parsed-job.json
 
       - run:
           name: Show parsed job
