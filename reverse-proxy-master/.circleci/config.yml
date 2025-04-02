@@ -9,7 +9,7 @@ executors:
 
   deploy-executor:
     docker:
-      - image: alpine:latest
+      - image: cimg/base:stable
     environment:
       NOMAD_JOB_FILE: reverse-proxy-master/reverse-proxy-master.nomad
     working_directory: ~/project
@@ -42,14 +42,15 @@ jobs:
       - checkout
 
       - run:
-          name: Install curl and unzip, download Nomad binary
+          name: Install unzip and download Nomad
           command: |
-            apk add --no-cache curl unzip
+            sudo apt update
+            sudo apt install -y unzip curl
             curl -LO https://releases.hashicorp.com/nomad/1.9.7/nomad_1.9.7_linux_amd64.zip
             unzip nomad_1.9.7_linux_amd64.zip
 
       - run:
-          name: Show Nomad version
+          name: Check Nomad version
           command: ./nomad version
 
       - run:
