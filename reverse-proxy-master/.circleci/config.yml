@@ -41,10 +41,9 @@ jobs:
       - checkout
 
       - run:
-          name: Convert .nomad to JSON
+          name: Convert .nomad to JSON (run -output)
           command: |
-            cd reverse-proxy-master
-            nomad job parse -json reverse-proxy-master.nomad > ../parsed-job.json
+            nomad job run -output $NOMAD_JOB_FILE > parsed-job.json
 
       - run:
           name: Show parsed job
