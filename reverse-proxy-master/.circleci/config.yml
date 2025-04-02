@@ -3,13 +3,13 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: cimg/base:stable  # Docker yüklü
+      - image: cimg/base:stable
     environment:
       IMAGE_NAME: ghcr.io/berkaydedeoglu/reverse-proxy-master
 
-  nomad-executor:
+  deploy-executor:
     docker:
-      - image: hashicorp/nomad:latest  # nomad CLI + curl var
+      - image: curlimages/curl:latest  # sadece curl ile deploy
 
 jobs:
   build-and-push:
@@ -34,22 +34,22 @@ jobs:
           command: docker push $IMAGE_NAME:latest
 
   deploy-nomad:
-    executor: nomad-executor
+    executor: deploy-executor
     steps:
       - checkout
 
       - run:
-          name: Convert Nomad job to JSON
+          name: Deploy HCL to Nomad API
           command: |
-            cd reverse-proxy-master
-            nomad job parse -json reverse-proxy-master.nomad > ../job.json
+            curl -X POST "$NOMAD_ADDR/v1/jobs/parse?region=global&canonicalize=true&validate=true" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary @reverse-proxy-master/reverse-proxy-master.nomad \
+              | tee response.json
 
-      - run:
-          name: Deploy to Nomad via API
-          command: |
+            echo "Posting parsed job to /v1/jobs..."
             curl -X POST "$NOMAD_ADDR/v1/jobs" \
               -H "Content-Type: application/json" \
-              --data-binary @job.json
+              --data-binary @response.json
 
 workflows:
   version: 2
