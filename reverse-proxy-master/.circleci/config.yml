@@ -1,0 +1,33 @@
+version: 2.1
+
+executors:
+  podman-executor:
+    docker:
+      - image: quay.io/podman/stable
+    environment:
+      IMAGE_NAME: ghcr.io/berkaydedeoglu/reverse-proxy-master
+
+jobs:
+  build-and-push:
+    executor: podman-executor
+    steps:
+      - checkout
+
+      - run:
+          name: Build image
+          command: |
+            cd reverse-proxy-master
+            podman build -t $IMAGE_NAME:latest .
+
+      - run:
+          name: Login to GHCR
+          command: echo $GHCR_TOKEN | podman login ghcr.io -u $GHCR_USER --password-stdin
+
+      - run:
+          name: Push image
+          command: podman push $IMAGE_NAME:latest
+
+workflows:
+  build:
+    jobs:
+      - build-and-push
