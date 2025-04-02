@@ -7,11 +7,12 @@ executors:
     environment:
       IMAGE_NAME: ghcr.io/berkaydedeoglu/reverse-proxy-master
 
-  nomad-executor:
+  deploy-executor:
     docker:
-      - image: hashicorp/nomad:latest
+      - image: alpine:latest
     environment:
       NOMAD_JOB_FILE: reverse-proxy-master/reverse-proxy-master.nomad
+    working_directory: ~/project
 
 jobs:
   build-and-push:
@@ -36,12 +37,19 @@ jobs:
           command: docker push $IMAGE_NAME:latest
 
   deploy-nomad:
-    executor: nomad-executor
+    executor: deploy-executor
     steps:
       - checkout
 
       - run:
-          name: Convert .nomad to JSON (run -output)
+          name: Install curl and nomad
+          command: |
+            apk add --no-cache curl
+            curl -LO https://releases.hashicorp.com/nomad/1.9.7/nomad_1.9.7_linux_amd64.zip
+            unzip nomad_1.9.7_linux_amd64.zip && mv nomad /usr/local/bin/ && chmod +x /usr/local/bin/nomad
+
+      - run:
+          name: Convert .nomad to JSON
           command: |
             nomad job run -output $NOMAD_JOB_FILE > parsed-job.json
 
