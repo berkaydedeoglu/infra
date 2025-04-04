@@ -67,7 +67,7 @@ jobs:
           command: |
             curl -X POST "$NOMAD_ADDR/v1/jobs" \
               -H "Content-Type: application/json" \
-              -H "X-Nomad-Token: $NOMAD_ACL_TOKEN \
+              -H "X-Nomad-Token: $NOMAD_ACL_TOKEN" \
               --data-binary @parsed-job.json
 
 workflows:
