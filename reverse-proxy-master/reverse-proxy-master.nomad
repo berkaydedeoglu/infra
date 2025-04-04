@@ -2,6 +2,12 @@ job "reverse-proxy-master" {
   datacenters = ["dc1"]
   type = "service"
 
+  constraint {
+    attribute = "${node.class}"
+    operator  = "="
+    value     = "proxy-only"
+  }
+
   group "reverse-proxy-master" {
     count = 1
 
@@ -17,7 +23,7 @@ job "reverse-proxy-master" {
       }
 
       resources {
-        cpu    = 200
+        cpu_limit    = 200
         memory = 128
       }
     }
