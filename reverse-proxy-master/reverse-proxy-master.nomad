@@ -23,7 +23,7 @@ job "reverse-proxy-master" {
       }
 
       resources {
-        cpu_limit    = 200
+        cpu    = 200
         memory = 128
       }
     }
