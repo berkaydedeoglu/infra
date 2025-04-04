@@ -27,6 +27,11 @@ job "reverse-proxy-master" {
         cpu    = 200
         memory = 128
       }
+
+      logs {
+        max_files      = 3
+        max_file_size  = 10
+      }
     }
   }
 }
