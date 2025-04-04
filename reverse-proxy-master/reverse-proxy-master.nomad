@@ -20,6 +20,7 @@ job "reverse-proxy-master" {
 
       config {
         image = "ghcr.io/berkaydedeoglu/reverse-proxy-master:latest"
+        network_mode  = "host"
       }
 
       resources {
