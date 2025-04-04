@@ -26,7 +26,6 @@ job "reverse-proxy-master" {
       resources {
         cpu    = 200
         memory = 128
-        }
       }
     }
   }
