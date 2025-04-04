@@ -25,6 +25,14 @@ job "reverse-proxy-master" {
       resources {
         cpu    = 200
         memory = 128
+        network {
+          port "http" {
+            static = 80
+          }
+          port "https" {
+            static = 443
+          }
+        }
       }
     }
   }
