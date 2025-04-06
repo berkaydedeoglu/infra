@@ -7,22 +7,17 @@ job "nomad-deployer" {
     operator  = "!="
     value     = "proxy-only"
   }
- 
+
   group "deployer" {
     count = 1
 
-    network {
-      port "http" {
-        static = 8000
-      }
-    }
-
+    # network bloğu artık gereksiz, host network kullandığımız için kaldırıyoruz
     task "fastapi-nomad-deployer" {
       driver = "podman"
 
       config {
-        image = "ghcr.io/berkaydedeoglu/nomad-deployer:latest"
-        ports = ["http"]
+        image         = "ghcr.io/berkaydedeoglu/nomad-deployer:latest"
+        network_mode  = "host"  # 🔥 Kritik ayar
       }
 
       env {
@@ -39,7 +34,7 @@ job "nomad-deployer" {
 
       service {
         name = "nomad-deployer"
-        port = "http"
+        port = "http"  # Bu hala gerekli çünkü Consul servisini register ederken kullanılıyor
 
         check {
           type     = "http"
