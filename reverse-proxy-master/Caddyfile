@@ -8,5 +8,14 @@
 
 nomad.berkaydedeoglu.dev {
   encode gzip
+
+  handle_path /deployer/* {
+    reverse_proxy {
+      to srv+nomad-deployer.service.consul
+      health_uri /health
+      load_balance policy random
+    }
+  }
+
   reverse_proxy http://147.93.121.174:4646
 }
