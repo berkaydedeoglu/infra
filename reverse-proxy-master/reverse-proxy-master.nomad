@@ -33,6 +33,7 @@ job "reverse-proxy-master" {
           path     = "/"
           interval = "10s"
           timeout  = "2s"
+          port     = 80 
         }
       }
 
