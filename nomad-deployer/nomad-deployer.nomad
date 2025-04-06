@@ -2,6 +2,12 @@ job "nomad-deployer" {
   datacenters = ["dc1"]
   type = "service"
 
+  constraint {
+    attribute = "${node.class}"
+    operator  = "!="
+    value     = "proxy-only"
+  }
+ 
   group "deployer" {
     count = 1
 
