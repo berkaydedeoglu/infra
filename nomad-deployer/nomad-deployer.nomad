@@ -12,9 +12,7 @@ job "nomad-deployer" {
     count = 1
 
     network {
-      port "http" {
-        static = 8000
-      }
+      port "http" {}
     }
 
     task "fastapi-nomad-deployer" {
@@ -22,7 +20,7 @@ job "nomad-deployer" {
 
       config {
         image         = "ghcr.io/berkaydedeoglu/nomad-deployer:latest"
-        network_mode  = "host"  # 🔥 Kritik ayar
+        network_mode  = "host"
       }
 
       env {
