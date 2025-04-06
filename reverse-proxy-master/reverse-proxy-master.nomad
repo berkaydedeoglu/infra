@@ -11,17 +11,12 @@ job "reverse-proxy-master" {
   group "reverse-proxy-master" {
     count = 1
 
-    network {
-      mode = "host"
-    }
-
     task "reverse-proxy-master" {
       driver = "podman"
 
       config {
-        image = "ghcr.io/berkaydedeoglu/reverse-proxy-master:latest"
+        image         = "ghcr.io/berkaydedeoglu/reverse-proxy-master:latest"
         network_mode  = "host"
-        dns_servers = ["147.93.121.174"]
       }
 
       resources {
@@ -31,7 +26,6 @@ job "reverse-proxy-master" {
 
       service {
         name = "caddy-reverse"
-        port = "http"
 
         check {
           name     = "http health"
@@ -43,8 +37,8 @@ job "reverse-proxy-master" {
       }
 
       logs {
-        max_files      = 3
-        max_file_size  = 10
+        max_files     = 3
+        max_file_size = 10
       }
     }
   }
