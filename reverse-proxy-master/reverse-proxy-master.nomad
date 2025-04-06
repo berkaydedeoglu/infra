@@ -28,12 +28,13 @@ job "reverse-proxy-master" {
         name = "caddy-reverse"
 
         check {
-          name     = "http health"
-          type     = "http"
-          path     = "/"
-          interval = "10s"
-          timeout  = "2s"
-          port     = 80 
+          name         = "http health"
+          type         = "http"
+          path         = "/_health"
+          interval     = "10s"
+          timeout      = "2s"
+          port         = 80
+          address_mode = "driver"
         }
       }
 
