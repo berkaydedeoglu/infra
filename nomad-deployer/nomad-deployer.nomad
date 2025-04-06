@@ -11,7 +11,6 @@ job "nomad-deployer" {
   group "deployer" {
     count = 1
 
-    # network bloğu artık gereksiz, host network kullandığımız için kaldırıyoruz
     task "fastapi-nomad-deployer" {
       driver = "podman"
 
@@ -34,7 +33,6 @@ job "nomad-deployer" {
 
       service {
         name = "nomad-deployer"
-        port = "http"  # Bu hala gerekli çünkü Consul servisini register ederken kullanılıyor
 
         check {
           type     = "http"
