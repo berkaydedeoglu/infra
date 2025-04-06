@@ -12,7 +12,7 @@ job "nomad-deployer" {
     }
 
     task "fastapi-nomad-deployer" {
-      driver = "docker"
+      driver = "podman"
 
       config {
         image = "ghcr.io/berkaydedeoglu/nomad-deployer:latest"
