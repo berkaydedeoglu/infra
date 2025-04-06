@@ -12,7 +12,9 @@ job "nomad-deployer" {
     count = 1
 
     network {
-      port "http" {}
+      port "http" {
+        static = 8000
+      }
     }
 
     task "fastapi-nomad-deployer" {
