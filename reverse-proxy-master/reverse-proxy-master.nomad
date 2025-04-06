@@ -28,6 +28,19 @@ job "reverse-proxy-master" {
         memory = 128
       }
 
+      service {
+        name = "caddy-reverse"
+        port = "http"
+
+        check {
+          name     = "http health"
+          type     = "http"
+          path     = "/"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
       logs {
         max_files      = 3
         max_file_size  = 10
