@@ -11,7 +11,7 @@ nomad.berkaydedeoglu.dev {
 
   handle_path /deployer/* {
     reverse_proxy {
-      to srv+nomad-deployer.service.consul
+      to nomad-deployer.service.consul
       health_uri /health
       load_balance policy random
     }
