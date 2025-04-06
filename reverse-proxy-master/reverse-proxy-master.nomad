@@ -17,7 +17,7 @@ job "reverse-proxy-master" {
       config {
         image         = "ghcr.io/berkaydedeoglu/reverse-proxy-master:latest"
         network_mode  = "host"
-        dns_servers   = ["127.0.0.1"]
+        dns   = ["127.0.0.1"]
       }
 
       resources {
