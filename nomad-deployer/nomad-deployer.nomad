@@ -11,6 +11,12 @@ job "nomad-deployer" {
   group "deployer" {
     count = 1
 
+    network {
+      port "http" {
+        static = 8000
+      }
+    }
+
     task "fastapi-nomad-deployer" {
       driver = "podman"
 
@@ -33,6 +39,7 @@ job "nomad-deployer" {
 
       service {
         name = "nomad-deployer"
+        port = "http"
 
         check {
           type     = "http"
