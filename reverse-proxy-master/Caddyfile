@@ -1,3 +1,7 @@
+{
+  debug
+}
+
 :80 {
   respond /_health "OK" 200
 }
