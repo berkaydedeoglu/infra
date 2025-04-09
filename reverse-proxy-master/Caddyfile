@@ -1,30 +1,21 @@
-{
-  debug
-}
-
 :80 {
-  respond /_health "OK" 200
+        respond /_health "OK" 200
 }
 
 :443 {
-  respond /_health "OK" 200
+        respond /_health "OK" 200
 }
 
 nomad.berkaydedeoglu.dev {
-  encode gzip
+        encode gzip
 
-  handle /deployer/* {
-    uri strip_prefix /deployer
-    reverse_proxy nomad-deployer.service.consul:8000 {
-      health_uri /health
-      load_balance policy random
-    }
-  }
+        handle_path /deployer/* {
+                reverse_proxy nomad-deployer.service.consul:8000
+        }
 
-  handle {
-    reverse_proxy http://147.93.121.174:4646
-  }
+        handle {
+                reverse_proxy http://147.93.121.174:4646
+        }
 
-  respond /_health "OK" 200
+        respond /_health "OK" 200
 }
-
