@@ -18,9 +18,10 @@ job "reverse-proxy-master" {
         image         = "ghcr.io/berkaydedeoglu/reverse-proxy-master:latest"
         force_pull = true
         network_mode  = "host"
+        user = "0" 
         volumes = [
-          "/opt/caddy_data:/data",
-          "/opt/caddy_config:/config"
+          "/opt/caddy_data:/data:Z",
+          "/opt/caddy_config:/config:Z"
         ]
       }
 
