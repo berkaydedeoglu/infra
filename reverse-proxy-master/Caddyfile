@@ -1,5 +1,5 @@
 {
-  acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+        email berkay.dedeoglu@outlook.com
 }
 
 :80 {
