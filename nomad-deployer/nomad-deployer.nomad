@@ -21,7 +21,7 @@ job "nomad-deployer" {
       template {
         destination = "local/env.sh"
         perms = "0755"
-        data = <<EOF
+        data = <<-EOF
           #!/bin/bash
           export GITHUB_REPO_URI="${NOMAD_VAR_GITHUB_REPO_URI}"
           export GITHUB_BRANCH="${NOMAD_VAR_GITHUB_BRANCH}"
