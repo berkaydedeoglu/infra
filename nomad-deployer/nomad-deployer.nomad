@@ -1,3 +1,22 @@
+# ---------------------------
+# Variables
+# ---------------------------
+variable "GITHUB_REPO_URI" {
+  type = string
+}
+
+variable "GITHUB_BRANCH" {
+  type = string
+}
+
+variable "NOMAD_ADDR" {
+  type = string
+}
+
+variable "NOMAD_ACL_TOKEN" {
+  type = string
+}
+
 job "nomad-deployer" {
   datacenters = ["dc1"]
   type = "service"
@@ -27,10 +46,10 @@ job "nomad-deployer" {
       }
 
       env {
-        GITHUB_REPO_URI   = "${NOMAD_SECRETS_GITHUB_REPO_URI}"
-        GITHUB_BRANCH     = "${NOMAD_SECRETS_GITHUB_BRANCH}"
-        NOMAD_ADDR        = "${NOMAD_SECRETS_NOMAD_ADDR}"
-        NOMAD_ACL_TOKEN   = "${NOMAD_SECRETS_NOMAD_ACL_TOKEN}"
+        GITHUB_REPO_URI = "${NOMAD_VAR_GITHUB_REPO_URI}"
+        GITHUB_BRANCH   = "${NOMAD_VAR_GITHUB_BRANCH}"
+        NOMAD_ADDR      = "${NOMAD_VAR_NOMAD_ADDR}"
+        NOMAD_ACL_TOKEN = "${NOMAD_VAR_NOMAD_ACL_TOKEN}"
       }
 
       resources {
