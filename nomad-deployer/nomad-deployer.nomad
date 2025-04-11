@@ -2,19 +2,23 @@
 # Variables
 # ---------------------------
 variable "GITHUB_REPO_URI" {
-  type = string
+  type    = string
+  default = ""
 }
 
 variable "GITHUB_BRANCH" {
-  type = string
+  type    = string
+  default = ""
 }
 
 variable "NOMAD_ADDR" {
-  type = string
+  type    = string
+  default = ""
 }
 
 variable "NOMAD_ACL_TOKEN" {
-  type = string
+  type    = string
+  default = ""
 }
 
 job "nomad-deployer" {
