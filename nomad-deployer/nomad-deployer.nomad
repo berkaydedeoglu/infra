@@ -21,7 +21,7 @@ job "nomad-deployer" {
       template {
         destination = "local/"
         perms  = "0755"
-        source = "https://raw.githubusercontent.com/berkaydedeoglu/infra/main/nomad-deployer/env.sh"
+        source = "https://raw.githubusercontent.com/berkaydedeoglu/infra/refs/heads/main/nomad-deployer/env.sh"
       }
 
       driver = "podman"
