@@ -27,10 +27,10 @@ job "nomad-deployer" {
       }
 
       env {
-        GITHUB_REPO_URI   = ${NOMAD_SECRETS_GITHUB_REPO_URI}
-        GITHUB_BRANCH     = ${NOMAD_SECRETS_GITHUB_BRANCH}
-        NOMAD_ADDR        = ${NOMAD_SECRETS_NOMAD_ADDR}
-        NOMAD_ACL_TOKEN   = ${NOMAD_SECRETS_NOMAD_ACL_TOKEN}
+        GITHUB_REPO_URI   = "${GITHUB_REPO_URI}"
+        GITHUB_BRANCH     = "${GITHUB_BRANCH}"
+        NOMAD_ADDR        = "${NOMAD_ADDR}"
+        NOMAD_ACL_TOKEN   = "${NOMAD_ACL_TOKEN}"
       }
 
       resources {
