@@ -23,20 +23,12 @@ job "nomad-deployer" {
         source = "https://raw.githubusercontent.com/berkaydedeoglu/infra/refs/heads/main/nomad-deployer/env.sh"
       }
 
-      template {
-        source      = "local/env.sh"
-        destination = "local/env.sh"
-        perms       = "0755"
-      }
-
       driver = "podman"
 
       config {
         image         = "ghcr.io/berkaydedeoglu/nomad-deployer:latest"
         network_mode  = "host"
         force_pull    = true
-        command       = "sh"
-        args          = ["/local/env.sh"]
       }
 
       resources {
