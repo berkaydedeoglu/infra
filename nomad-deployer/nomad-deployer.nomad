@@ -35,7 +35,8 @@ job "nomad-deployer" {
         image         = "ghcr.io/berkaydedeoglu/nomad-deployer:latest"
         network_mode  = "host"
         force_pull    = true
-        command      = "/local/env.sh"
+        command       = "sh"
+        args          = ["/local/env.sh"]
       }
 
       resources {
