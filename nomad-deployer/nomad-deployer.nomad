@@ -18,9 +18,8 @@ job "nomad-deployer" {
     }
 
     task "fastapi-nomad-deployer" {
-      template {
+      artifact {
         destination = "local/"
-        perms  = "0755"
         source = "https://raw.githubusercontent.com/berkaydedeoglu/infra/refs/heads/main/nomad-deployer/env.sh"
       }
 
