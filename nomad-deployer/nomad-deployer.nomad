@@ -3,22 +3,22 @@
 # ---------------------------
 variable "GITHUB_REPO_URI" {
   type    = string
-  default = "-"
+  default = "default-url"
 }
 
 variable "GITHUB_BRANCH" {
   type    = string
-  default = "-"
+  default = "main"
 }
 
 variable "NOMAD_ADDR" {
   type    = string
-  default = "-"
+  default = "nomad"
 }
 
 variable "NOMAD_ACL_TOKEN" {
   type    = string
-  default = "-"
+  default = "nomad"
 }
 
 job "nomad-deployer" {
