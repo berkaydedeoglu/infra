@@ -1,26 +1,3 @@
-# ---------------------------
-# Variables
-# ---------------------------
-variable "GITHUB_REPO_URI" {
-  type    = string
-  default = "default-url"
-}
-
-variable "GITHUB_BRANCH" {
-  type    = string
-  default = "main"
-}
-
-variable "NOMAD_ADDR" {
-  type    = string
-  default = "nomad"
-}
-
-variable "NOMAD_ACL_TOKEN" {
-  type    = string
-  default = "nomad"
-}
-
 job "nomad-deployer" {
   datacenters = ["dc1"]
   type = "service"
@@ -41,19 +18,26 @@ job "nomad-deployer" {
     }
 
     task "fastapi-nomad-deployer" {
+      template {
+        destination = "local/env.sh"
+        perms = "0755"
+        data = <<EOF
+          #!/bin/bash
+          export GITHUB_REPO_URI="${NOMAD_VAR_GITHUB_REPO_URI}"
+          export GITHUB_BRANCH="${NOMAD_VAR_GITHUB_BRANCH}"
+          export NOMAD_ADDR="${NOMAD_VAR_NOMAD_ADDR}"
+          export NOMAD_ACL_TOKEN="${NOMAD_VAR_NOMAD_ACL_TOKEN}"
+          exec "$@"
+          EOF
+      }
+
       driver = "podman"
 
       config {
         image         = "ghcr.io/berkaydedeoglu/nomad-deployer:latest"
         network_mode  = "host"
-        force_pull = true
-      }
-
-      env {
-        GITHUB_REPO_URI = "${NOMAD_VAR_GITHUB_REPO_URI}"
-        GITHUB_BRANCH   = "${NOMAD_VAR_GITHUB_BRANCH}"
-        NOMAD_ADDR      = "${NOMAD_VAR_NOMAD_ADDR}"
-        NOMAD_ACL_TOKEN = "${NOMAD_VAR_NOMAD_ACL_TOKEN}"
+        force_pull    = true
+        command      = "/local/env.sh"
       }
 
       resources {
