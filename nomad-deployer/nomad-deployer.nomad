@@ -23,13 +23,14 @@ job "nomad-deployer" {
       config {
         image         = "ghcr.io/berkaydedeoglu/nomad-deployer:latest"
         network_mode  = "host"
+        force_pull = true
       }
 
       env {
-        GITHUB_REPO_URI   = "${NOMAD_SECRETS_GITHUB_REPO_URI}"
-        GITHUB_BRANCH     = "${NOMAD_SECRETS_GITHUB_BRANCH}"
-        NOMAD_ADDR        = "${NOMAD_SECRETS_NOMAD_ADDR}"
-        NOMAD_ACL_TOKEN   = "${NOMAD_SECRETS_NOMAD_ACL_TOKEN}"
+        GITHUB_REPO_URI   = ${NOMAD_SECRETS_GITHUB_REPO_URI}
+        GITHUB_BRANCH     = ${NOMAD_SECRETS_GITHUB_BRANCH}
+        NOMAD_ADDR        = ${NOMAD_SECRETS_NOMAD_ADDR}
+        NOMAD_ACL_TOKEN   = ${NOMAD_SECRETS_NOMAD_ACL_TOKEN}
       }
 
       resources {
