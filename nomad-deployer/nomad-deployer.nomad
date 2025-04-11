@@ -19,7 +19,7 @@ job "nomad-deployer" {
 
     task "fastapi-nomad-deployer" {
       artifact {
-        destination = "local/"
+        destination = "local/env.sh"
         source = "https://raw.githubusercontent.com/berkaydedeoglu/infra/refs/heads/main/nomad-deployer/env.sh"
       }
 
