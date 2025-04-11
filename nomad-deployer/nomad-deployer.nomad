@@ -18,11 +18,6 @@ job "nomad-deployer" {
     }
 
     task "fastapi-nomad-deployer" {
-      artifact {
-        destination = "local/"
-        source = "https://raw.githubusercontent.com/berkaydedeoglu/infra/refs/heads/main/nomad-deployer/env.sh"
-      }
-
       driver = "podman"
 
       config {
